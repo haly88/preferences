@@ -155,7 +155,7 @@ module Preferences
         class_attribute :preference_definitions
         self.preference_definitions = {}
         
-        has_many :stored_preferences, :as => :owner, :class_name => '::Preference'
+        has_many :stored_preferences, :as => :owner, :class_name => '::Preference', :dependent => :destroy
         
         after_save :update_preferences
         

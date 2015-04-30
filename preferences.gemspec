@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: preferences 0.4.2 ruby lib
+# stub: preferences 0.4.3 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "preferences"
-  s.version = "0.4.2"
+  s.version = "0.4.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Aaron Pfeifer"]
-  s.date = "2014-03-19"
+  s.date = "2015-05-10"
   s.description = "Adds support for easily creating custom preferences for ActiveRecord models"
   s.email = "aaron@pluginaweek.org"
   s.extra_rdoc_files = ["README.rdoc", "CHANGELOG.rdoc", "LICENSE"]
