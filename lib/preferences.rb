@@ -322,7 +322,48 @@ module Preferences
         typed_preferences
       end
     end
-    
+
+    # Finds all preferences, including defaults & schema, for the current record.  If
+    # looking up custom group preferences, then this will include all default
+    # preferences within that particular group as well.
+    #
+    # == Examples
+    #
+    # A user with no stored values:
+    #
+    #   user = User.find(:first)
+    #   user.preferences
+    #   => {"language"=> {:value => "English", :schema => nil}, "color"=> {:value => nil, :schema => nil}}
+    #
+    # A user with stored values for a particular group:
+    #
+    #   user.preferred_color = 'red', :cars
+    #   user.preferences(:cars)
+    #   => {"language"=> {:value => "English", :schema => nil}, "color"=> {:value => red, :schema => nil}}
+    def preferences_with_schema(group = nil)
+      preferences = preferences_group(group)
+
+      unless preferences_group_loaded?(group)
+        group_id, group_type = Preference.split_group(group)
+        find_preferences(:group_id => group_id, :group_type => group_type).each do |preference|
+          preferences[preference.name] = preference.value unless preferences.include?(preference.name)
+        end
+
+        # Add defaults & schemas
+        preference_definitions.each do |name, definition|
+          preferences[name] = definition.default_value(group_type) unless preferences.include?(name)
+        end
+      end
+
+      preferences.inject({}) do |typed_preferences, (name, value)|
+        typed_preferences[name] = {
+          :value => (value.nil? ? value : preference_definitions[name].type_cast(value)),
+          :schema => preference_definitions[name].schema
+        }
+        typed_preferences
+      end
+    end
+
     # Queries whether or not a value is present for the given preference.
     # This is dependent on how the value is type-casted.
     # 
