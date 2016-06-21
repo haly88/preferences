@@ -2,7 +2,7 @@ module Preferences
   # Represents the definition of a preference for a particular model
   class PreferenceDefinition
     # The data type for the content stored in this preference type
-    attr_reader :type, :form_type, :default
+    attr_reader :type, :form_type, :default, :schema
 
     class << self
       def form_type(def_type)
@@ -21,13 +21,14 @@ module Preferences
     
     def initialize(name, *args) #:nodoc:
       options = args.extract_options!
-      options.assert_valid_keys(:default, :group_defaults)
+      options.assert_valid_keys(:default, :schema, :group_defaults)
       
       @type = args.first ? args.first.to_sym : :boolean
 
       @form_type = self.class.form_type(@type)
 
       @default = options[:default]
+      @schema  = options[:schema]
       
       # Create a column that will be responsible for typecasting
       @column = ActiveRecord::ConnectionAdapters::Column.new(name.to_s, options[:default], @type == :any ? nil : @type.to_s)
