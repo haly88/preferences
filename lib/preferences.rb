@@ -318,7 +318,9 @@ module Preferences
       end
       
       preferences.inject({}) do |typed_preferences, (name, value)|
-        typed_preferences[name] = value.nil? ? value : preference_definitions[name].type_cast(value)
+        unless preference_definitions[name].nil?
+          typed_preferences[name] = value.nil? ? value : preference_definitions[name].type_cast(value)
+        end
         typed_preferences
       end
     end
@@ -356,9 +358,14 @@ module Preferences
       end
 
       preferences.inject({}) do |typed_preferences, (name, value)|
+        unless preference_definitions[name].nil?
+          preference_value = value.nil? ? value : preference_definitions[name].type_cast(value)
+          preference_schema = preference_definitions[name].schema
+        end
+
         typed_preferences[name] = {
-          :value => (value.nil? ? value : preference_definitions[name].type_cast(value)),
-          :schema => preference_definitions[name].schema
+          :value => preference_value,
+          :schema => preference_schema
         }
         typed_preferences
       end
