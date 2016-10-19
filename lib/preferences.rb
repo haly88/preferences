@@ -361,12 +361,11 @@ module Preferences
         unless preference_definitions[name].nil?
           preference_value = value.nil? ? value : preference_definitions[name].type_cast(value)
           preference_schema = preference_definitions[name].schema
+          typed_preferences[name] = {
+            :value => preference_value,
+            :schema => preference_schema
+          }
         end
-
-        typed_preferences[name] = {
-          :value => preference_value,
-          :schema => preference_schema
-        }
         typed_preferences
       end
     end
